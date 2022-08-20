@@ -18,26 +18,37 @@ li {
 a {
   text-decoration: none;
 }
+.real-logo{
+  width: 35%;
+  justify-content: center;
+  padding-top: 25px;
+}
 .side-nav {
   display: flex;
   flex-direction: column;
   background: #121212;
   width: 210px;
-  position: absolute;
+  position: fixed;
+  height: 100%;
   left: 0;
-  /* height: 145vh; */
 }
 .logo {
   width: 100%;
   border-bottom: 1px solid white;
+  padding:20px 0px 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  padding: 40px 0;
+  margin: auto;
+  align-items: center;
 }
 .logo a {
   color: #ec100c;
   font-weight: 700;
   justify-content: center;
   font-size: 26px;
+  padding-top: 15px;
 }
 .line {
   background-color: #f4f7fe;
@@ -46,10 +57,11 @@ a {
   margin-bottom: 30px;
 }
 nav ul {
-  padding: 30px 0;
+  padding: 5px 0;
 }
 nav li {
   width: 100%;
+  padding: 8px 0px;
 }
 nav li .active {
   border-right: 3px solid #ec100c;
@@ -70,13 +82,12 @@ nav ul li a {
 .text-below {
   width: 80%;
   text-align: center;
-  padding-top: 350px;
+  padding-bottom: 10px;
   /* position: absolute; */
   bottom: 0px;
 }
 .text-below img {
   width: 60%;
-  padding-top: 100px;
   text-align: center;
 }
 .text-below p {
@@ -87,7 +98,6 @@ nav ul li a {
   align-items: center;
   text-align: center;
   margin: auto;
-  padding: 10px 0px;
 }
 .fa-home {
   color: white;
@@ -102,8 +112,9 @@ nav ul li a {
   position: fixed;
   right: 0px;
   left: 0px;
-  z-index: 99;
+  z-index: 100;
 }
+
 .whole .background {
   background: #000000;
   width: 100%;
@@ -111,12 +122,10 @@ nav ul li a {
 .first-ul {
   background: #000000;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin: auto;
   width: 90%;
   display: flex;
-  padding: 12px 0px;
-  min-width: 100%;
 }
 .first-ul .drop-command {
   color: #ffffff;
@@ -141,6 +150,15 @@ nav ul li a {
   text-align: center;
   display: flex;
 }
+.first-ul .real-logo{
+  width: 30%;
+  padding-top: 20px;
+}
+.first-ul a{
+  justify-content: right;
+  text-align: center;
+  display: flex;
+}
 .first-ul li a {
   width: 100%;
   border-bottom: none;
@@ -158,8 +176,11 @@ nav ul li a {
   padding-top: 0px;
   height: 100%;
 }
+.whole .main-ul li{
+  padding: 8px 0px;
+}
 .whole .main-ul li a {
-  padding: 12px 0 12px 20px;
+  padding: 15px 0 15px 20px;
   width: 100%;
   align-items: center;
   text-align: center;
@@ -177,3 +198,16 @@ nav ul li a {
   width: 40%;
 }
 
+
+
+/* <div className="background">
+<ul className="first-ul">
+  <div className="drop-command" onClick={handleClick}>
+    {click ? <HiOutlineMenuAlt1 /> : <HiOutlineMenuAlt1 />}
+    <h5>Menu</h5>
+  </div>
+  <li>
+    <NavLink to="/">Pneuma Life</NavLink>
+  </li>
+</ul>
+</div> */

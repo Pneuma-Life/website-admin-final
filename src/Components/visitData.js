@@ -1,32 +1,33 @@
 export const map = [
-  { view: 2000 },
-  { view: 1200 },
-  { view: 1500 },
-  { view: 1780 },
-  { view: 1990 },
-  { view: 2190 },
-  { view: 2490 },
-  { view: 2200 },
-  { view: 2300 },
-  { view: 2500 },
-  { view: 2380 },
-  { view: 2290 },
-  { view: 2190 },
-  { view: 1990 },
-  { view: 2200 },
-  { view: 2400 },
-  { view: 2200 },
-  { view: 2580 },
-  { view: 2790 },
-  { view: 3090 },
-  { view: 3290 },
-  { view: 3300 },
-  { view: 3400 },
-  { view: 3500 },
-  { view: 3780 },
-  { view: 3390 },
-  { view: 3190 },
-  { view: 2490 },
+  { view: 2000, viewer: 3000 },
+  { view: 1200, viewer: 2800 },
+  { view: 1500, viewer: 2700 },
+  { view: 1780, viewer: 2500 },
+  { view: 1990, viewer: 2300 },
+  { view: 2190, viewer: 2150 },
+  { view: 2490, viewer: 1900 },
+  { view: 2200, viewer: 1790 },
+  { view: 2300, viewer: 1500 },
+  { view: 2350, viewer: 1300 },
+  { view: 2500, viewer: 1150 },
+  { view: 2290, viewer: 1300 },
+  { view: 2210, viewer: 1500 },
+  { view: 2190, viewer: 1700 },
+  { view: 1990, viewer: 1900 },
+  { view: 2200, viewer: 2500 },
+  { view: 2400, viewer: 2700 },
+  { view: 2200, viewer: 2900 },
+  { view: 2580, viewer: 3100 },
+  { view: 2790, viewer: 2500 },
+  { view: 3090, viewer: 2300 },
+  { view: 3290, viewer: 2100 },
+  { view: 3300, viewer: 2200 },
+  { view: 3400, viewer: 2300 },
+  { view: 3500, viewer: 2900 },
+  { view: 3870, viewer: 2500 },
+  { view: 3390, viewer: 2000 },
+  { view: 3190, viewer: 1990 },
+  { view: 2490, viewer: 1900 },
 ];
 
 export const Monthly = [
@@ -119,13 +120,10 @@ export const daily = [
   },
 ];
 
-
-
-
 export const download = [
   {
     name: "Mon",
-   downloads: 20,
+    downloads: 20,
   },
   {
     name: "Tue",
@@ -150,152 +148,146 @@ export const download = [
   {
     name: "Sun",
     downloads: 10,
-  }
+  },
 ];
 
+export const presentyearly = [
+  {
+    name: "jan",
+    value: 1300,
+  },
+  {
+    name: "feb",
+    value: 800,
+  },
+  {
+    name: "mar",
+    value: 400,
+  },
+  {
+    name: "apr",
+    value: 1000,
+  },
+  {
+    name: "may",
+    value: 800,
+  },
+  {
+    name: "jun",
+    value: 500,
+  },
+  {
+    name: "jul",
+    value: 300,
+  },
+  {
+    name: "aug",
+    value: 800,
+  },
+  {
+    name: "sep",
+    value: 600,
+  },
+  {
+    name: "oct",
+    value: 1200,
+  },
+  {
+    name: "nov",
+    value: 600,
+  },
+  {
+    name: "dec",
+    value: 900,
+  },
+];
 
-
-export const presentyearly =[
+export const Lastyearly = [
   {
-    name:"jan",
-    value: 1300
+    name: "jan",
+    value: 900,
   },
   {
-    name:"feb",
-    value: 800
+    name: "feb",
+    value: 300,
   },
   {
-    name:"mar",
-    value: 400
+    name: "mar",
+    value: 400,
   },
   {
-    name:"apr",
-    value: 1000
+    name: "apr",
+    value: 400,
   },
   {
-    name:"may",
-    value: 800
+    name: "may",
+    value: 430,
   },
   {
-    name:"jun",
-    value: 500
+    name: "jun",
+    value: 450,
   },
   {
-    name:"jul",
-    value: 300
+    name: "jul",
+    value: 700,
   },
   {
-    name:"aug",
-    value: 800
+    name: "aug",
+    value: 800,
   },
   {
-    name:"sep",
-    value: 600
+    name: "sep",
+    value: 900,
   },
   {
-    name:"oct",
-    value: 1200
+    name: "oct",
+    value: 1000,
   },
   {
-    name:"nov",
-    value: 600
+    name: "nov",
+    value: 600,
   },
   {
-    name:"dec",
-    value: 900
+    name: "dec",
+    value: 1000,
   },
-
-]
-
-
-export const Lastyearly =[
-  {
-    name:"jan",
-    value: 900
-  },
-  {
-    name:"feb",
-    value: 300
-  },
-  {
-    name:"mar",
-    value: 400
-  },
-  {
-    name:"apr",
-    value: 400
-  },
-  {
-    name:"may",
-    value: 430
-  },
-  {
-    name:"jun",
-    value: 450
-  },
-  {
-    name:"jul",
-    value: 700
-  },
-  {
-    name:"aug",
-    value: 800
-  },
-  {
-    name:"sep",
-    value: 900
-  },
-  {
-    name:"oct",
-    value: 1000
-  },
-  {
-    name:"nov",
-    value: 600
-  },
-  {
-    name:"dec",
-    value: 1000
-  },
-
-]
-
+];
 
 export const Subscribers = [
   {
     Name: "Martins uiux",
     Email: "Martinzmartins002@gmail.com",
     Date: "1/may/2022",
-    Time:"2;00pm"
+    Time: "2;00pm",
   },
   {
     Name: "Isreal uiux",
     Email: "ISREALPNEUMA2@gmail.com",
     Date: "1/may/2022",
-    Time:"1;20pm"
+    Time: "1;20pm",
   },
   {
     Name: "Pastor Dafe",
     Email: "Daferichard01@gmail.com",
     Date: "1/may/2022",
-    Time:"1;10pm"
+    Time: "1;10pm",
   },
   {
     Name: "Iyanu mercy",
     Email: "Iyanucms002@gmail.com",
     Date: "1/may/2022",
-    Time:"1;02pm"
+    Time: "1;02pm",
   },
   {
     Name: "Darrell Williamson",
     Email: "Iyanucms002@gmail.com",
     Date: "1/may/2022",
-    Time:"1;00pm"
+    Time: "1;00pm",
   },
   {
     Name: "Martins damola",
     Email: "Martinsdamola@gmail.com",
     Date: "1/may/2022",
-    Time:"1;00pm"
-  }
+    Time: "1;00pm",
+  },
 ];

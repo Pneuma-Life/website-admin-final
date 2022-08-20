@@ -29,9 +29,8 @@
   position: relative;
 }
 .stream .mode {
-  position: absolute;
-  right: 50px;
-  bottom: -80px;
+  position: relative;
+  justify-content: right;
   display: flex;
   gap: 20px;
 }

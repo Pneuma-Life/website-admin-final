@@ -57,3 +57,17 @@ td button {
   color: #2b3674;
   padding-top: 40px;
 }
+.cancel-head{
+  justify-content: right;
+  display: flex;
+  width: 100%;
+
+}
+.cancel-icon {
+  justify-content: right;
+  font-size: 40px;
+  color: red;
+  float: right;
+  cursor: pointer;
+  position: absolute;
+}

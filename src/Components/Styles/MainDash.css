@@ -12,10 +12,24 @@
   margin: auto;
   padding-left: 210px;
 }
+.full-headnav{
+  position: sticky;
+  z-index: 100;
+  background: #ffffff;
+  top: 0;
+  padding: 20px 0px;
+  
+ 
+}
 .headnav {
   display: flex;
+  width: 100%;
   justify-content: space-between;
-  padding-top: 60px;
+  padding: 28px 0px 10px 0px;
+  box-shadow:0px 2px 0px 0px rgb(231, 225, 225);
+ align-items: center;
+ text-align: center;
+  background: #ffffff;
 }
 .title {
   display: flex;
@@ -28,9 +42,13 @@
   font-size: 34px;
   padding-right: 10px;
 }
-.title img {
-  width: 40px;
-  height: 40px;
+.title svg {
+  font-size: 40px;
+  padding: 4px;
+  border-radius: 50%;
+  background: #2B3674;
+  color: white;
+  cursor: pointer;
 }
 .profile {
   display: flex;
@@ -68,6 +86,7 @@
   width: 100%;
   justify-content: center;
   margin: auto;
+  padding-top: 10px;
 }
 .visit {
   display: grid;
@@ -78,18 +97,17 @@
 .daily-visit {
   background-color: #f4f7fe;
   border-radius: 0.4rem;
-  padding: 10px;
+  padding: 5px;
   transition: 0.3s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 1px 1px;
 }
 .daily-visit :hover {
-  /* transform: translateY(-4px); */
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 1px 1px;
+  transform: translateY(-4px);
 }
 .mon-visit {
   width: 100%;
   background-color: #f4f7fe;
   border-radius: 0.4rem;
-  padding: 10px;
   transition: 0.3s ease-in-out;
   height: 50vh;
 }
@@ -102,7 +120,6 @@
   font-size: 24px;
   color: #1b2559;
 }
-
 .download {
   width: 100%;
   background-color: #f4f7fe;
@@ -119,9 +136,11 @@
   width: 100%;
   background-color: #f4f7fe;
   border-radius: 0.4rem;
-  padding: 10px;
+  padding: 5px;
   transition: 0.3s ease-in-out;
-  height: 50vh;
+  /* height: 50vh; */
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 1px 1px;
+
 }
 .row-two {
   display: grid;
