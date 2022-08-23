@@ -9,14 +9,69 @@ import { AiOutlinePlus } from "react-icons/ai";
 import "./Styles/Blog.css";
 import redlogo from "../assets/red-logo.png";
 
+import axios from '../api/index';
+import LoadingSpinner from '../Components/Loader/LoadingSpinner'
+import Alert from '@mui/material/Alert';
+
 function BlogPage() {
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [popUp, setPopUp] = useState(false);
+  const [blogs, setBlogs] = useState({
+    title: '',
+    author: '',
+    body: '',
+});
 
-  const UploadForm = () => {
-    alert("form uploaded");
-    setShowForm(false);
-  };
+const handleImage = (e) => {
+  let image = e.target.files[0];
+  setImage(image);
+  //console.log(image);
+}
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSuccessMsg('');
+  setErrorMsg('');
+  setLoading(true);
+
+  try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append('title', blogs.title);
+      formData.append('author', blogs.author);
+      formData.append('message', blogs.body);
+
+      const response = await axios.post(
+          'blog',
+          formData
+        ,
+          {
+              headers: { "Content-Type": "multipart/form-data"},
+          }
+      )
+      setBlogs({
+          title: '',
+          author: '',
+          body: '',
+      });
+      setSuccessMsg('Blog uploaded successfully');
+      setLoading(false);
+  } catch(err) {
+      if (!err?.response) {
+          setErrorMsg("No Server Response");
+          setLoading(false);
+        } else {
+          setErrorMsg(" Unable to upload Blog");
+          setLoading(false);
+        }
+    
+  }
+}
+
   const handleShowForm = () => {
     setShowForm(true);
   };
@@ -43,23 +98,46 @@ function BlogPage() {
                 <img src={redlogo} alt="" />
                 <h1>Add Blog</h1>
               </div>
-              <div className="choose-file">
-                <input type="file" />
+              { errorMsg ? 
+                      <Alert severity="error" variant="outlined">
+                        {errorMsg}
+                      </Alert> 
+                      : null 
+                    }
+                    { successMsg ?
+                        <Alert severity="success" variant="outlined" >
+                         {successMsg}
+                       </Alert>
+                      : null
+                     }
+              <div className="form-group">
+                <label htmlFor="">Title</label>
+                <input type="text"  
+                value={blogs.title}
+                onChange={(e) => setBlogs({...blogs, title: e.target.value})}/>
               </div>
               <div className="form-group">
-                <label htmlFor="">Name</label>
-                <input type="text" />
-              </div>
-              <div className="form-group">
-                <input type="text" />
+                <label htmlFor="author">Author</label>
+                <input type="text"  
+                value={blogs.author}
+                onChange={(e) => setBlogs({...blogs, author: e.target.value})}/>
               </div>
               <div className="form-type">
-                <label htmlFor=""> Type here</label>
-                <textarea name="" id="" cols="30" rows="10"></textarea>
+                <label htmlFor=""> Blog Body </label>
+                <textarea 
+                name="" id="" cols="30" rows="10"
+                value={blogs.body}
+                onChange={(e) => setBlogs({...blogs, body: e.target.value})}></textarea>
+              </div>
+              <div className="choose-file">
+                <input type="file" onChange={handleImage} />
               </div>
               <div className="changes">
-                <button className="edit-button" onClick={UploadForm}>
-                  Upload
+                <button 
+                className="edit-button" 
+                onClick={handleSubmit}
+                disabled={loading}>
+                  Upload   {loading && <LoadingSpinner /> }
                 </button>
               </div>
             </form>

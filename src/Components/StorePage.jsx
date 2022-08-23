@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Styles/StorePages.css'
 import "./Styles/Responsiveness.css";
 import profile from '../assets/propic.jpg';
@@ -6,16 +6,25 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { BiEditAlt } from 'react-icons/bi';
 import { FaTimes } from 'react-icons/fa';
 import { AiOutlinePlus } from 'react-icons/ai';
-import spirit1 from '../assets/spirit1.png';
-import spirit2 from '../assets/spirit2.png';
-import faith1 from '../assets/faith1.png';
-import faith2 from '../assets/faith2.png';
-import power1 from '../assets/power1.png';
-import power2 from '../assets/power2.png';
-import prayer1 from '../assets/prayer1.png';
-import prayer2 from '../assets/prayer2.png';
+// import spirit1 from '../assets/spirit1.png';
+// import spirit2 from '../assets/spirit2.png';
+// import faith1 from '../assets/faith1.png';
+// import faith2 from '../assets/faith2.png';
+// import power1 from '../assets/power1.png';
+// import power2 from '../assets/power2.png';
+// import prayer1 from '../assets/prayer1.png';
+// import prayer2 from '../assets/prayer2.png';
 import redlogo from '../assets/red-logo.png';
 
+import axios from '../api/index';
+import Button from '@mui/material/Button';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import LoadingSpinner from '../Components/Loader/LoadingSpinner';
+import Alert from '@mui/material/Alert';
 
 
 function StorePage() {
@@ -28,19 +37,116 @@ function StorePage() {
     const handleCloseForm = () => {
         setShowForm(false)
     };
-    const UploadForm = () =>  {
-        alert('form uploaded');
-        setShowForm(false)
-    }
+    // const UploadForm = () =>  {
+    //     alert('form uploaded');
+    //     setShowForm(false)
+    // }
 
 
 
-    const handleDeletePopUp = () => {
-        setPopUp(true)
+    const handleDelete = () => {
     };
     const handleCloseDeletePopUp = () => {
         setPopUp(false)
     };
+
+    const [adminStore, setAdminStore] = useState({
+        title: '',
+        author: '',
+        message: '',
+        amount: '',
+        youtubeLink: '',
+        datePreached: '',
+        payable: 'false',
+    });
+
+    const handleFiles = (e) => {
+        let file = e.target.files[0];
+        setFile(file);
+        console.log(file);
+
+    }
+
+    const handleAudio = (e) => {
+        let audio = e.target.files[0];
+        setAudio(audio);
+        console.log(audio);
+    }
+
+    const handleImage = (e) => {
+        let image = e.target.files[0];
+        setImage(image);
+        console.log(image);
+    }
+
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [file, setFile] = useState('');
+    const [image, setImage] = useState('');
+    const [audio, setAudio] = useState('');
+    const [stores, setStores] = useState([]);
+
+    useEffect(()=> {
+        setLoading(true);
+        axios.get('store').then(res => {
+            console.log(res.data);
+            console.log(res.data.query)        
+            setStores(res.data.query);
+            setLoading(false);
+        }).catch(err => console.log(err))
+    }, [])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSuccessMsg('');
+        setErrorMsg('');
+        setLoading(true);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("image", image);
+            formData.append("audio", audio);
+            formData.append('title', adminStore.title);
+            formData.append('author', adminStore.author);
+            formData.append('message', adminStore.message);
+            formData.append('amount', adminStore.amount);
+            formData.append('youtubeLink', adminStore.youtubeLink);
+            formData.append('datePreached', adminStore.datePreached);
+            formData.append('payable', adminStore.payable);
+            const response = await axios.post(
+                'store',
+                formData
+              ,
+                {
+                    headers: { "Content-Type": "multipart/form-data"},
+                }
+            )
+            setAdminStore({
+                title: '',
+                author: '',
+                message: '',
+                amount: '',
+                youtubeLink: '',
+                datePreached: '',
+                payable: 'false'
+            });
+            console.log(adminStore);
+            setSuccessMsg('Message uploaded successfully');
+            setLoading(false);
+        } catch(err) {
+            if (!err?.response) {
+                setErrorMsg("No Server Response");
+                setLoading(false);
+              } else {
+                setErrorMsg(" Unable to upload message");
+                setLoading(false);
+              }
+          
+        }
+    }
+
     return (
         <div>
             {showForm ?
@@ -54,38 +160,122 @@ function StorePage() {
                                 <img src={redlogo} alt="" />
                                 <h1>Add Message</h1>
                             </div>
+                            { errorMsg ? 
+                            <Alert severity="error" variant="outlined">
+                                {errorMsg}
+                            </Alert> 
+                            : null 
+                            }
+                            { successMsg ?
+                                    <Alert severity="success" variant="outlined" >
+                                        {successMsg}
+                                    </Alert>
+                                : null
+                            }
                             <div className="form-group">
                                 <label htmlFor="">Youtube Link</label>
-                                <input type="text" />
+                                <input type="text"
+                                 value={adminStore.youtubeLink} 
+                                onChange={(e)=>setAdminStore({...adminStore, youtubeLink: e.target.value})} />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="">Message Title</label>
-                                <input type="text" />
+                                <input type="text"
+                                value={adminStore.title}
+                                 onChange={(e) => setAdminStore({...adminStore, title: e.target.value})}
+                                 />
                             </div>
 
 
-                            <div className="form-type">
-                                <label htmlFor="">About Message</label>
-                                <textarea name="" id="" cols="20" rows="2"></textarea>
+                            <div className="form-group">
+                                <label htmlFor="">Author</label>
+                                <input type="text"
+                                value={adminStore.author}
+                                 onChange={(e) => setAdminStore({...adminStore, author: e.target.value})}
+                                 />
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="">Author Name</label>
-                                <input type="text" />
+                                <label htmlFor="">Message</label>
+                                <input type="text"
+                                 value={adminStore.message}
+                                 onChange={(e) => setAdminStore({...adminStore, message: e.target.value})}
+                                 />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="">Amount</label>
+                                <input type="text"
+                                 value={adminStore.amount}
+                                 onChange={(e) => setAdminStore({...adminStore, amount: e.target.value})}
+                                 />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="">Date Message Preached</label>
+                                <input type="date"
+                                 value={adminStore.datePreached}
+                                 onChange={(e) => setAdminStore({...adminStore, datePreached: e.target.value})}
+                                 />
                             </div>
 
                             <div className="form-type">
-                                <label htmlFor="">About Message</label>
-                                <textarea name="" id="" cols="30" rows="2"></textarea>
+                                <Button variant="contained" component="label">
+                                Upload sermon image
+                                <input 
+                                hidden accept="image/*" 
+                                multiple 
+                                type="file"
+                                onChange={handleImage} />
+                                </Button>
                             </div>
 
-
-                            <div className="choose-file" >
-                                <input type="file" />
+                            <div className="form-type">
+                                <Button variant="contained" component="label">
+                                Upload transcript(pdf)
+                                <input 
+                                hidden 
+                                accept="pdf/*" 
+                                multiple 
+                                type="file" 
+                                onChange={handleFiles}/>
+                                </Button>
                             </div>
+
+                            <div className="form-type">
+                                <Button variant="contained" component="label">
+                                    Upload message(mp3)
+                                    <input 
+                                    hidden 
+                                    accept="mp3/*" 
+                                    multiple 
+                                    type="file" 
+                                    onChange={handleAudio}/>
+                                </Button>
+                            </div>
+
+                            <div className="form-type">
+                            <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Payable?</FormLabel>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                                onChange={(e)=>setAdminStore({ ...adminStore, payable: e.target.value })}
+                            >
+                                <FormControlLabel value="true" control={<Radio />} label="Yes"  />
+                                <FormControlLabel value="false" control={<Radio />} label="No"  />
+                            </RadioGroup>
+                            </FormControl>
+                        </div>
+
 
                             <div className="changes">
-                                <button onClick={UploadForm} className="edit-button">Upload</button>
+                                <button 
+                                onClick={handleSubmit} 
+                                className="edit-button"
+                                disabled={loading}
+                                >Upload  {loading && <LoadingSpinner /> }</button>
                             </div>
                         </form>
                     </div>
@@ -142,17 +332,21 @@ function StorePage() {
                         <h2>Books on spirit</h2>
                         <div className="slide">
                             <div className="spirit">
-                                <div className="part">
-                                    <img src={spirit1} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
+                                { stores.map((store) =>( 
+                                <div 
+                                key={store._id}
+                                className="part"
+                                >
+                                    <img src={store.image} alt="" />
+                                    <h5>{store.title}</h5>
+                                    <p>{store.message}</p>
                                     <div>
                                         <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine onClick={handleDeletePopUp} className='delete' />
+                                        <RiDeleteBinLine onClick={handleDelete} className='delete' />
 
                                     </div>
-                                </div>
-                                <div className="part">
+                                </div> ))}
+                                {/* <div className="part">
                                     <img src={spirit2} alt="" />
                                     <h5>planted (Part 2)</h5>
                                     <p>The realities in the Spirit are not physical..</p>
@@ -287,8 +481,8 @@ function StorePage() {
                                         <BiEditAlt className='edit' />
                                         <RiDeleteBinLine className='delete' />
 
-                                    </div>
-                                </div>
+                                    </div> 
+                                </div> */}
 
                             </div>
                         </div>
