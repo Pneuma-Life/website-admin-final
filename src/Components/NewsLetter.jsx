@@ -1,10 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import './Styles/NewsLetter.css'
 import profile from '../assets/propic.jpg';
 import { NewsLetter } from './Data';
 import redlogo from '../assets/red-logo.png';
 import { FaTimes } from 'react-icons/fa';
-
+import axios from '../api/index';
 
 
 
@@ -15,6 +15,17 @@ import { FaTimes } from 'react-icons/fa';
 function NewsLetterPage() {
     const [letter, setLetters] = useState(NewsLetter);
     const [showForm, setShowForm] = useState(false);
+
+    //const [letter, setLetters] = useState([]);
+
+    useEffect(() => {
+
+        axios.get('newsletter')
+        .then(response => {
+            setLetters(response.data.query)
+        })
+        .catch(err => console.log(err))
+    }, [])
 
     const handleShowForm = () => {
         setShowForm(true)
@@ -60,19 +71,19 @@ function NewsLetterPage() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                {/* <th>Name</th> */}
                                 <th>Email</th>
-                                <th>Date</th>
+                                {/* <th>Date</th> */}
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {letter.map((Subscribers, idx) => (
-                                <Fragment key={idx}>
+                            {letter.map((Subscribers) => (
+                                <Fragment key={Subscribers._id}>
                                     <tr>
-                                        <td>{Subscribers.Name}</td>
+                                        {/* <td>{Subscribers.Name}</td> */}
                                         <td className='email'>{Subscribers.Email}</td>
-                                        <td>{Subscribers.Date}</td>
+                                        {/* <td>{Subscribers.Date}</td> */}
                                         <td><button className='cancel-button'>cancel</button></td>
 
                                     </tr>
@@ -80,8 +91,8 @@ function NewsLetterPage() {
                             ))}
                         </tbody>
                     </table>
-
                 </div>
+
             </div>
             {showForm ?
                 <div className='event-full3'>
