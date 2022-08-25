@@ -4,7 +4,9 @@ import profile from '../assets/propic.jpg';
 import { NewsLetter } from './Data';
 import redlogo from '../assets/red-logo.png';
 import { FaTimes } from 'react-icons/fa';
+import Alert from '@mui/material/Alert';
 import axios from '../api/index';
+import LoadingSpinner from '../Components/Loader/LoadingSpinner';
 
 
 
@@ -15,6 +17,11 @@ import axios from '../api/index';
 function NewsLetterPage() {
     const [letter, setLetters] = useState(NewsLetter);
     const [showForm, setShowForm] = useState(false);
+    const [errormsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [email, setEmail] = React.useState('');
+    const [loading, setLoading] = useState(false);
 
     //const [letter, setLetters] = useState([]);
 
@@ -33,9 +40,34 @@ function NewsLetterPage() {
     const handleCloseForm = () => {
         setShowForm(false)
     };
-    const UploadForm = () => {
-        alert('Hello you have successfully Subscribe to our Newsletter');
-        setShowForm(false)
+    const UploadForm = async (e) => {
+        const newsletterUrl = `newsletter`
+        setLoading(true)
+        setSuccessMsg('');
+        setErrorMsg('');
+        e.preventDefault();
+        try {
+            const response = await axios.post(
+                newsletterUrl,
+                JSON.stringify({ email }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                }
+            )
+            setSuccess(true);
+            setLoading(false)
+            setSuccessMsg('Email successfully added to newsletter')
+            setEmail('')
+        } catch(err) {
+            if (!err?.response) {
+                setErrorMsg("No Server Response");
+                setLoading(false)
+              } else {
+                setErrorMsg(" Unable to add email to the newsletter");
+                setLoading(false);
+              }
+          
+        }
     }
 
     return (
@@ -82,7 +114,7 @@ function NewsLetterPage() {
                                 <Fragment key={Subscribers._id}>
                                     <tr>
                                         {/* <td>{Subscribers.Name}</td> */}
-                                        <td className='email'>{Subscribers.Email}</td>
+                                        <td className='email'>{Subscribers.email}</td>
                                         {/* <td>{Subscribers.Date}</td> */}
                                         <td><button className='cancel-button'>cancel</button></td>
 
@@ -107,23 +139,36 @@ function NewsLetterPage() {
 
                             </div>
 
-                            <div className="form-group">
+                            { errormsg ? 
+                            <Alert severity="error" variant="outlined">
+                                {errormsg}
+                            </Alert> 
+                            : null }
+                        { successMsg ?
+                            <Alert severity="success" variant="outlined" >
+                                {successMsg}
+                            </Alert>
+                        : null}
+
+                            {/* <div className="form-group">
                                 <label htmlFor="">Name</label>
                                 <input type="text" />
-                            </div>
+                            </div> */}
 
                             <div className="form-group">
                                 <label htmlFor="">Email</label>
-                                <input type="email" />
+                                <input type="email" onChange={(e)=>setEmail(e.target.value)} />
                             </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label htmlFor="">Date</label>
                                 <input type="date" />
-                            </div>
+                            </div> */}
 
 
                             <div className="changes">
-                                <button onClick={UploadForm} className="edit-button">Subscribe</button>
+                                <button onClick={UploadForm} className="edit-button">
+                                    Subscribe  {loading && <LoadingSpinner /> }
+                                    </button>
                             </div>
                         </form>
                     </div>

@@ -8,7 +8,7 @@ const NewsLetter = () => {
     <div>
       <SideNav />
       <NewsLetterPage />
-      <BlogForm />
+      {/* <BlogForm /> */}
     </div>
   );
 }
