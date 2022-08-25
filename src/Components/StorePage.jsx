@@ -87,15 +87,15 @@ function StorePage() {
     const [audio, setAudio] = useState('');
     const [stores, setStores] = useState([]);
 
-    useEffect(()=> {
-        setLoading(true);
-        axios.get('store').then(res => {
-            console.log(res.data);
-            console.log(res.data.query)        
-            setStores(res.data.query);
-            setLoading(false);
-        }).catch(err => console.log(err))
-    }, [])
+    // useEffect(()=> {
+    //     setLoading(true);
+    //     axios.get('store').then(res => {
+    //         console.log(res.data);
+    //         console.log(res.data.query)        
+    //         setStores(res.data.query);
+    //         setLoading(false);
+    //     }).catch(err => console.log(err))        
+    // }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -332,7 +332,7 @@ function StorePage() {
                         <h2>Books on spirit</h2>
                         <div className="slide">
                             <div className="spirit">
-                                { stores.map((store) =>( 
+                                {/* { stores.map((store) =>( 
                                 <div 
                                 key={store._id}
                                 className="part"
@@ -345,7 +345,7 @@ function StorePage() {
                                         <RiDeleteBinLine onClick={handleDelete} className='delete' />
 
                                     </div>
-                                </div> ))}
+                                </div> ))} */}
                                 {/* <div className="part">
                                     <img src={spirit2} alt="" />
                                     <h5>planted (Part 2)</h5>

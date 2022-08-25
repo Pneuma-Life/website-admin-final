@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Styles/MainDash.css";
 import { FaTimes } from "react-icons/fa";
 import profile from "../assets/propic.jpg";
@@ -20,6 +20,8 @@ function BlogPage() {
   const [image, setImage] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [popUp, setPopUp] = useState(false);
+  const [fetchblogs, setFetchblogs] = useState([])
+  const [id, setId] = useState('');
   const [blogs, setBlogs] = useState({
     title: '',
     author: '',
@@ -78,12 +80,30 @@ const handleSubmit = async (e) => {
   const handleCloseForm = () => {
     setShowForm(false);
   };
-  const handleDeletePopUp = () => {
-    setPopUp(true);
+  const handleDelete = () => {
+    try{
+
+    } catch(err){
+      if (!err?.response) {
+        setErrorMsg("No Server Response");
+        setLoading(false);
+      } else {
+        setErrorMsg("Unable to delete blog");
+        setLoading(false);
+      }
+    }
   };
   const handleCloseDeletePopUp = () => {
     setPopUp(false);
   };
+
+  useEffect(() => {
+    axios.get('blog').then(res => {       
+        setFetchblogs(res.data.query);
+        setId(res.data.query[0]._id);
+        console.log(id);
+    }).catch(err => console.log(err))
+}, [])
 
   return (
     <div>
@@ -222,19 +242,88 @@ const handleSubmit = async (e) => {
         </div>
         <div className="blog-welcome">
           <div className="blog-books">
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
+            {fetchblogs.map((fetchblogs) => (
+            <div 
+            className="part"
+            key={fetchblogs._id}
+            >
+              <img src={fetchblogs.photo} alt="blog" />
+              <h5>{fetchblogs.title}</h5>
+              <p>{fetchblogs.body}</p>
               <div>
                 <BiEditAlt className="edit" />
                 <RiDeleteBinLine
-                  onClick={handleDeletePopUp}
+                  onClick={handleDelete}
                   className="delete"
                 />
               </div>
             </div>
+            ))}
+
             <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div>
+            {/* <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div> */}
+            {/* <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div> */}
+            {/* <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div> */}
+            {/* <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div> */}
+            {/* <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div> */}
+            {/* <div className="part">
+              <img src={growth} alt="" />
+              <h5>planted (Part 1)</h5>
+              <p>The realities in the Spirit are not physical..</p>
+              <div>
+                <BiEditAlt className="edit" />
+                <RiDeleteBinLine className="delete" />
+              </div>
+            </div> */}
+            {/* <div className="part">
               <img src={growth} alt="" />
               <h5>planted (Part 1)</h5>
               <p>The realities in the Spirit are not physical..</p>
@@ -287,8 +376,8 @@ const handleSubmit = async (e) => {
                 <BiEditAlt className="edit" />
                 <RiDeleteBinLine className="delete" />
               </div>
-            </div>
-            <div className="part">
+            </div> */}
+            {/* <div className="part">
               <img src={growth} alt="" />
               <h5>planted (Part 1)</h5>
               <p>The realities in the Spirit are not physical..</p>
@@ -296,70 +385,7 @@ const handleSubmit = async (e) => {
                 <BiEditAlt className="edit" />
                 <RiDeleteBinLine className="delete" />
               </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

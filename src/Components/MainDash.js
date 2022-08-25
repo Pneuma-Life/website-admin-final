@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "./Styles/MainDash.css";
 import {
@@ -27,10 +27,23 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import axios from '../api/index';
+
 
 function MainDash() {
   const [reach, setReach] = useState(Subscribers);
   const [value, onChange] = useState(new Date());
+  const [letter, setLetters] = useState([]);
+
+
+  useEffect(() => {
+
+    axios.get('newsletter')
+    .then(response => {
+        setLetters(response.data.query)
+    })
+    .catch(err => console.log(err))
+}, [])
 
   return (
     <div className="container">
@@ -344,20 +357,20 @@ function MainDash() {
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
+                  {/* <th>Name</th> */}
                   <th>Email</th>
                   <th>Date</th>
                   <th>Time</th>
                 </tr>
               </thead>
               <tbody>
-                {reach.map((reachers, idn) => (
-                  <Fragment key={idn}>
+                {letter.map((reachers) => (
+                  <Fragment key={reachers._id}>
                     <tr>
-                      <td>{reachers.Name}</td>
+                      {/* <td>{reachers.Name}</td> */}
                       <td className="email">{reachers.Email}</td>
-                      <td>{reachers.Date}</td>
-                      <td>{reachers.Time}</td>
+                      <td>{reachers.createdAt}</td>
+                      <td>{reachers.createdAt}</td>
                     </tr>
                   </Fragment>
                 ))}
