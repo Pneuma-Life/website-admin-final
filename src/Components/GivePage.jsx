@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect} from 'react';
 import './Styles/GivePage.css'
 // import circle from '../assets/circle.png';
 import { FaTimes } from 'react-icons/fa';
@@ -7,14 +7,37 @@ import redlogo from '../assets/red-logo.png';
 import { Recieved } from './Data.js';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { GiveOut } from './Data.js';
+import axios from '../api/index';
+import Alert from '@mui/material/Alert';
+import LoadingSpinner from '../Components/Loader/LoadingSpinner'
 
 
 
 
 function GivePage() {
-    const [Persons, setPersons] = useState(Recieved);
-    const [Reasons, setReasons] = useState(GiveOut);
+    const [Persons, setPersons] = useState([]);
+    // const [Reasons, setReasons] = useState(GiveOut);
     const [showForm, setShowForm] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [recurringGiveForm, setRecurringGiveForm] = useState({
+        fullname: '',
+        address: '',
+        city: '',
+        telephone: '',
+        email: ''
+    });
+
+    useEffect(()=> {
+        setLoading(true);
+        axios.get('give').then(res => {
+            // console.log(res.data);
+            // console.log(res.data.query);        
+            setPersons(res.data.query);
+            setLoading(false);
+        }).catch(err => console.log(err))        
+    }, [])
 
     const handleShowForm = () => {
         setShowForm(true)
@@ -22,10 +45,46 @@ function GivePage() {
     const handleCloseForm = () => {
         setShowForm(false)
     };
-    const UploadForm = () => {
-        alert('form uploaded');
-        setShowForm(false)
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSuccessMsg('');
+        setErrorMsg('');
+        setLoading(true);
+        try {
+            const response = await axios.post(
+                'give',
+                JSON.stringify({ 
+                    fullname: recurringGiveForm.fullname,
+                    address: recurringGiveForm.address,
+                    city: recurringGiveForm.city,
+                    telephone: recurringGiveForm.telephone,
+                    email: recurringGiveForm.email
+                 }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                }
+            )
+            setRecurringGiveForm({
+                fullname: '',
+                address: '',
+                city: '',
+                telephone: '',
+                email: ''
+            });
+            setSuccessMsg('Giving successfully scheduled');
+            setLoading(false);
+        } catch(err) {
+            if (!err?.response) {
+                setErrorMsg("No Server Response");
+                setLoading(false);
+              } else {
+                setErrorMsg(" Unable to schedule giving ");
+                setLoading(false);
+              }
+          
+        }
     }
+
 
     return (
        <div>
@@ -62,25 +121,26 @@ function GivePage() {
                 <table>
                     <thead>
                         <tr>
-                            <th>Amount Received</th>
-                            <th>Status</th>
+                            {/* <th>Amount Received</th>
+                            <th>Status</th> */}
                             <th>Name</th>
                             <th>Email</th>
                             <th>Date</th>
-                            <th>Location</th>
+                            <th>City</th>
+                            <th>Address</th>
                         </tr>
                     </thead>
                     <tbody>
                         {Persons.map((person, index) => (
                             <Fragment key={index}>
                                 <tr>
-                                    <td>{person.Amount}</td>
-                                    <td className='status'><button>{person.Status ? 'Completed' : 'canceled'}</button></td>
-                                    <td>{person.Name}</td>
-                                    <td className='email'>{person.Email}</td>
-                                    <td>{person.Date}</td>
-                                    <td>{person.Location}</td>
-
+                                    {/* <td>{person.Amount}</td>
+                                    <td className='status'><button>{person.Status ? 'Completed' : 'canceled'}</button></td> */}
+                                    <td>{person.fullname}</td>
+                                    <td className='email'>{person.email}</td>
+                                    <td>{person.createdAt}</td>
+                                    <td>{person.city}</td>
+                                    <td>{person.address}</td>
                                 </tr>
                             </Fragment>
                         ))}
@@ -100,37 +160,52 @@ function GivePage() {
                         <form action="">
                             <div className='form-head'>
                                 <img src={redlogo} alt="" />
-                                <h1>Add Message</h1>
+                                <h1>Give</h1>
 
                             </div>
+                            { errorMsg ? 
+                            <Alert severity="error" variant="outlined">
+                                {errorMsg}
+                            </Alert> 
+                            : null }
+                        { successMsg ?
+                            <Alert severity="success" variant="outlined" >
+                                {successMsg}
+                            </Alert>
+                        : null}
                             <div className="form-group">
-                                <label htmlFor="">Amount Recieved</label>
-                                <input type="text" />
+                                <label htmlFor="">Full name</label>
+                                <input 
+                                type="text" 
+                                value={recurringGiveForm.fullname}
+                                onChange={(e)=>setRecurringGiveForm({...recurringGiveForm, fullname: e.target.value})}/>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="">Status</label>
-                                <input type="text" />
+                                <label htmlFor="">Address</label>
+                                <input type="text" 
+                                value={recurringGiveForm.address}
+                                onChange={(e)=>setRecurringGiveForm({...recurringGiveForm, address: e.target.value})}/>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="">Name</label>
-                                <input type="text" />
+                                <label htmlFor="">City</label>
+                                <input type="text" value={recurringGiveForm.city} 
+                                onChange={(e)=>setRecurringGiveForm({...recurringGiveForm, city: e.target.value})}/>
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="">Email</label>
-                                <input type="email" />
+                                <input type="email" value={recurringGiveForm.email}
+                                 onChange={(e)=>setRecurringGiveForm({...recurringGiveForm, email: e.target.value})}/>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="">Date</label>
-                                <input type="date" />
+                                <label htmlFor="">Telephone</label>
+                                <input type="text" value={recurringGiveForm.telephone} 
+                                onChange={(e)=>setRecurringGiveForm({...recurringGiveForm, telephone: e.target.value})}/>
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="">Location</label>
-                                <input type="text" />
-                            </div>
-
                             <div className="changes">
-                                <button onClick={UploadForm} className="edit-button">Upload</button>
+                                <button onClick={handleSubmit} className="edit-button">
+                                    Upload
+                                {loading && <LoadingSpinner /> }</button>
                             </div>
                         </form>
                     </div>

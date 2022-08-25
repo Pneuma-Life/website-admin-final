@@ -33,7 +33,7 @@ import axios from '../api/index';
 function MainDash() {
   const [reach, setReach] = useState(Subscribers);
   const [value, onChange] = useState(new Date());
-  const [letter, setLetters] = useState([]);
+  const [letters, setLetters] = useState([]);
 
 
   useEffect(() => {
@@ -364,11 +364,11 @@ function MainDash() {
                 </tr>
               </thead>
               <tbody>
-                {letter.map((reachers) => (
+                {letters.map((reachers) => (
                   <Fragment key={reachers._id}>
                     <tr>
                       {/* <td>{reachers.Name}</td> */}
-                      <td className="email">{reachers.Email}</td>
+                      <td className="email">{reachers.email}</td>
                       <td>{reachers.createdAt}</td>
                       <td>{reachers.createdAt}</td>
                     </tr>
