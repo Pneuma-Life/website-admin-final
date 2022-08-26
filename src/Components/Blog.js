@@ -45,7 +45,7 @@ const handleSubmit = async (e) => {
       formData.append("image", image);
       formData.append('title', blogs.title);
       formData.append('author', blogs.author);
-      formData.append('message', blogs.body);
+      formData.append('body', blogs.body);
 
       const response = await axios.post(
           'blog',
@@ -259,16 +259,6 @@ const handleSubmit = async (e) => {
               </div>
             </div>
             ))}
-
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
             {/* <div className="part">
               <img src={growth} alt="" />
               <h5>planted (Part 1)</h5>
