@@ -43,6 +43,9 @@ function Login() {
             setLoading(false);
             navigate('/home');
         } catch (err) {
+            // console.log(err.message);
+            // setErrorMsg(err.message);
+            // setLoading(false);
             if (!err?.response) {
                 setErrorMsg("No Server Response");
                 setLoading(false);
@@ -94,7 +97,7 @@ function Login() {
                         </div>
                         <div className="remember">
                             
-                            <p>No account yet? <NavLink to='/signup'>Signup</NavLink> </p>
+                            {/* <p>No account yet? <NavLink to='/signup'>Signup</NavLink> </p> */}
                         </div>
                         <button onClick={handleSubmit}>
                             Sign In {loading && <LoadingSpinner />}

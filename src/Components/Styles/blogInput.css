@@ -64,7 +64,7 @@
 .container1 {
   justify-content: center;
   align-items: center;
-  width: 90%;
+  width: 100%;
   padding: 10px 0px;
 }
 .container2 {
@@ -97,7 +97,7 @@ a {
 form {
   justify-content: center;
   align-items: center;
-  width: 35%;
+  width: 37%;
   background: #ffffff;
   margin: auto;
   padding: 33px 45px;
@@ -154,7 +154,7 @@ form h1 {
   padding: 5px 0px;
 }
 .form-type label {
-  color: #393a3a;
+  /* color: #fff; */
   font-size: 15px;
   padding-bottom: 5px;
 }
@@ -173,13 +173,14 @@ textarea {
   padding-top: 10px;
 }
 .edit-button {
-  background: rgb(10, 61, 10);
+  background: rgb(201, 18, 18);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   color: white;
   cursor: pointer;
   width: 100%;
+  font-size: 20px;
 }
 .delete-button {
   background: rgb(230, 0, 0);

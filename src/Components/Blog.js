@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./Styles/MainDash.css";
 import { FaTimes } from "react-icons/fa";
 import profile from "../assets/propic.jpg";
-import growth from "../assets/growth.png";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { AiOutlinePlus } from "react-icons/ai";
 import "./Styles/Blog.css";
 import redlogo from "../assets/red-logo.png";
+// import { useParams } from "react-router-dom";
 
 import axios from '../api/index';
 import LoadingSpinner from '../Components/Loader/LoadingSpinner'
 import Alert from '@mui/material/Alert';
+// import { useParams } from 'react-router-dom';
 
 function BlogPage() {
   const [successMsg, setSuccessMsg] = useState('');
@@ -20,13 +21,16 @@ function BlogPage() {
   const [image, setImage] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [popUp, setPopUp] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [fetchblogs, setFetchblogs] = useState([])
-  const [id, setId] = useState('');
+  const [currentId, setCurrentId] = useState('');
   const [blogs, setBlogs] = useState({
     title: '',
     author: '',
     body: '',
+  
 });
+
 
 const handleImage = (e) => {
   let image = e.target.files[0];
@@ -74,25 +78,82 @@ const handleSubmit = async (e) => {
   }
 }
 
-  const handleShowForm = () => {
+  const handleEditForm = ( blog) => {
+    setIsEdit(true)
+    setShowForm(true);
+    setBlogs({
+      title: blog.title,
+      author: blog.author,
+      body: blog.body,
+  });
+  };
+
+  const handleCreateForm = () => {
+    setBlogs({
+      title: '',
+      author: '',
+      body: '',
+  });
+    setIsEdit(false);
     setShowForm(true);
   };
+
   const handleCloseForm = () => {
     setShowForm(false);
   };
-  const handleDelete = () => {
-    try{
 
-    } catch(err){
-      if (!err?.response) {
-        setErrorMsg("No Server Response");
+  const handleUpdate = async (e) => {
+        e.preventDefault();
+         setSuccessMsg('');
+         setLoading(true)
+         setErrorMsg('');
+      try {
+        const formData = new FormData();
+        formData.append("image", image);
+        formData.append('title', blogs.title);
+        formData.append('author', blogs.author);
+        formData.append('body', blogs.body);
+  
+        const response = await axios.put(
+            `blog/${currentId}`,
+            formData
+          ,
+            {
+                headers: { "Content-Type": "multipart/form-data"},
+            }
+        )
+        setSuccessMsg('Blog updated successfully');
         setLoading(false);
-      } else {
-        setErrorMsg("Unable to delete blog");
+    } catch(err) {
+        if (!err?.response) {
+            setErrorMsg("No Server Response");
+            setLoading(false);
+          } else {
+            console.log(err);
+            setErrorMsg(" Unable to update Blog" + err);
+            setLoading(false);
+          }
+     }
+  }
+
+  
+  const handleDelete = async () => {
+    setLoading(true);
+      await axios.delete(`/blog/${currentId}`)
+      .then((response) => 
+      {
+        console.log(response.json())
         setLoading(false);
-      }
-    }
+        setSuccessMsg('Blog deleted successfully')
+      })
+      .catch((err) => console.log(err));
+      window.alert('Unable to delete blog');
+      setLoading(false);
+      setPopUp(false);
   };
+  const handleDeletePopup = () => {
+    setPopUp(true);
+  }
   const handleCloseDeletePopUp = () => {
     setPopUp(false);
   };
@@ -100,8 +161,6 @@ const handleSubmit = async (e) => {
   useEffect(() => {
     axios.get('blog').then(res => {       
         setFetchblogs(res.data.query);
-        setId(res.data.query[0]._id);
-        console.log(id);
     }).catch(err => console.log(err))
 }, [])
 
@@ -134,31 +193,40 @@ const handleSubmit = async (e) => {
                 <label htmlFor="">Title</label>
                 <input type="text"  
                 value={blogs.title}
-                onChange={(e) => setBlogs({...blogs, title: e.target.value})}/>
+                onChange={(e) => setBlogs({...blogs, title: e.target.value}) }
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="author">Author</label>
                 <input type="text"  
                 value={blogs.author}
-                onChange={(e) => setBlogs({...blogs, author: e.target.value})}/>
+                onChange={(e) => setBlogs({...blogs, author: e.target.value})}
+                />
               </div>
               <div className="form-type">
                 <label htmlFor=""> Blog Body </label>
                 <textarea 
                 name="" id="" cols="30" rows="10"
                 value={blogs.body}
-                onChange={(e) => setBlogs({...blogs, body: e.target.value})}></textarea>
+                onChange={(e) => setBlogs({...blogs, body: e.target.value}) }></textarea>
               </div>
               <div className="choose-file">
                 <input type="file" onChange={handleImage} />
               </div>
               <div className="changes">
-                <button 
-                className="edit-button" 
-                onClick={handleSubmit}
-                disabled={loading}>
+                { isEdit ?  
+                  <button 
+                  className="edit-button" 
+                  onClick={handleUpdate}
+                  disabled={loading}>
+                    Update   {loading && <LoadingSpinner /> }
+                  </button>
+                :  <button 
+                    className="edit-button" 
+                    onClick={handleSubmit}
+                    disabled={loading}>
                   Upload   {loading && <LoadingSpinner /> }
-                </button>
+                </button>}
               </div>
             </form>
           </div>
@@ -171,7 +239,7 @@ const handleSubmit = async (e) => {
           <div className="pop-up-form">
             <div className="pop-up-info">
               <h5>Click Confirm to Delete</h5>
-              <button onClick={handleCloseDeletePopUp}>Confirm</button>
+              <button onClick={handleDelete}>Confirm{loading&& <LoadingSpinner />}</button>
             </div>
           </div>
         </div>
@@ -182,7 +250,7 @@ const handleSubmit = async (e) => {
           <div className="headnav">
             <div className="title">
               <h2>Blog</h2>
-              <AiOutlinePlus onClick={handleShowForm} />
+              <AiOutlinePlus onClick={handleCreateForm} />
             </div>
             <div className="profile">
               <div className="search">
@@ -241,142 +309,38 @@ const handleSubmit = async (e) => {
           </div>
         </div>
         <div className="blog-welcome">
-          <div className="blog-books">
-            {fetchblogs.map((fetchblogs) => (
+          { loading ? (<LoadingSpinner />) : 
+          (<div className="blog-books">
+            {fetchblogs.map((fetchblog) => (
             <div 
             className="part"
-            key={fetchblogs._id}
-            >
-              <img src={fetchblogs.photo} alt="blog" />
-              <h5>{fetchblogs.title}</h5>
-              <p>{fetchblogs.body}</p>
+            key={fetchblog._id}
+            > 
+              <img src={fetchblog.photo} alt="blog" />
+              <h5>{fetchblog.title}</h5>
+              <p>{fetchblog.body}</p>
               <div>
-                <BiEditAlt className="edit" />
+                <BiEditAlt
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentId(fetchblog._id);
+                  handleEditForm(fetchblog)
+                }}
+                //  onClick={() => handleEditForm(fetchblog)} 
+                 className="edit" />
                 <RiDeleteBinLine
-                  onClick={handleDelete}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentId(fetchblog._id);
+                  handleDeletePopup();
+                }}
+                  // onClick={handleDeletePopup}
                   className="delete"
                 />
               </div>
             </div>
             ))}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div>
-            <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-            {/* <div className="part">
-              <img src={growth} alt="" />
-              <h5>planted (Part 1)</h5>
-              <p>The realities in the Spirit are not physical..</p>
-              <div>
-                <BiEditAlt className="edit" />
-                <RiDeleteBinLine className="delete" />
-              </div>
-            </div> */}
-          </div>
+          </div>) }
         </div>
       </div>
     </div>

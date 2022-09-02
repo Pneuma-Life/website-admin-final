@@ -51,9 +51,9 @@ function Login() {
                 isAdmin: true,
                 isVerified: true
             });
-            setSuccessMsg('User successfully signed up');
+            setSuccessMsg('User successfully signed up, proceed to login');
             setLoading(false);
-            navigate('/home');
+            // navigate('/home');
         } catch (err) {
             if (!err?.response) {
                 setErrorMsg("No Server Response");

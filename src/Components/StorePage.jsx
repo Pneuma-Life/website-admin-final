@@ -30,22 +30,31 @@ import Alert from '@mui/material/Alert';
 function StorePage() {
     const [showForm, setShowForm] = useState(false);
     const [popUp, setPopUp] = useState(false);
+    const [currentId, setCurrentId] = useState("");
+    const [isEdit, setIsEdit] = useState(false);
 
-    const handleShowForm = () => {
-        setShowForm(true)
-    };
     const handleCloseForm = () => {
         setShowForm(false)
     };
-    // const UploadForm = () =>  {
-    //     alert('form uploaded');
-    //     setShowForm(false)
-    // }
 
-
-
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        setLoading(true)
+        await axios.delete(`/store/${currentId}`)
+        .then((response) => 
+        {
+          console.log(response.json())
+          setLoading(false);
+          setSuccessMsg('Blog deleted successfully')
+        })
+        .catch((err) => console.log(err));
+        window.alert('Unable to delete message');
+        setLoading(false);
+        setPopUp(false);
     };
+
+    const handleDeletePopup = () => {
+        setPopUp(true);
+    }
     const handleCloseDeletePopUp = () => {
         setPopUp(false)
     };
@@ -59,7 +68,35 @@ function StorePage() {
         datePreached: '',
         payable: 'false',
     });
-
+    const handleEditForm = (store) => {
+        setIsEdit(true)
+        setShowForm(true);
+        setAdminStore({
+            title: store.title,
+            author: store.author,
+            message: store.message,
+            amount: store.amount,
+            youtubeLink: store.youtubeLink,
+            datePreached: store.datePreached,
+            payable: store.payable,
+            image: store.image,
+            file: store.file,
+            audio: store.audio,
+      });
+    };
+    const handleCreateForm = () => {
+        setAdminStore({
+            title: '',
+            author: '',
+            message: '',
+            amount: '',
+            youtubeLink: '',
+            datePreached: '',
+            payable: 'false',
+      });
+        setIsEdit(false);
+        setShowForm(true);
+      };
     const handleFiles = (e) => {
         let file = e.target.files[0];
         setFile(file);
@@ -86,16 +123,58 @@ function StorePage() {
     const [image, setImage] = useState('');
     const [audio, setAudio] = useState('');
     const [stores, setStores] = useState([]);
+    const [id, setId] = useState('');
 
     useEffect(()=> {
         setLoading(true);
         axios.get('store').then(res => {
-            console.log(res.data);
-            console.log(res.data.query)        
+            setId(res.data.query[0]._id);       
             setStores(res.data.query);
             setLoading(false);
         }).catch(err => console.log(err))        
     }, [])
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+         setSuccessMsg('');
+         setLoading(true)
+         setErrorMsg('');
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("image", image);
+            formData.append("audio", audio);
+            formData.append('title', adminStore.title);
+            formData.append('author', adminStore.author);
+            formData.append('message', adminStore.message);
+            formData.append('amount', adminStore.amount);
+            formData.append('youtubeLink', adminStore.youtubeLink);
+            formData.append('datePreached', adminStore.datePreached);
+            formData.append('payable', adminStore.payable);
+            const response = await axios.put(
+                `store/${currentId}`,
+                formData
+              ,
+                {
+                    headers: { "Content-Type": "multipart/form-data"},
+                }
+            )
+           
+            console.log(adminStore);
+            setSuccessMsg('Message updated successfully');
+            setLoading(false);
+        } catch(err) {
+            if (!err?.response) {
+                setErrorMsg("No Server Response");
+                setLoading(false);
+              } else {
+                setErrorMsg(" Unable to update message");
+                setLoading(false);
+              }
+          
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -220,18 +299,31 @@ function StorePage() {
                             </div>
 
                             <div className="form-type">
-                                <Button variant="contained" component="label">
+                                <Button 
+                                variant="contained"
+                                 component="label"
+                                 sx={{
+                                    color: 'white',
+                                    backgroundColor: 'rgb(201, 18, 18)',
+                                  }} >
                                 Upload sermon image
                                 <input 
                                 hidden accept="image/*" 
                                 multiple 
                                 type="file"
-                                onChange={handleImage} />
+                                onChange={handleImage}
+                                />
                                 </Button>
                             </div>
 
                             <div className="form-type">
-                                <Button variant="contained" component="label">
+                                <Button 
+                                variant="contained"
+                                 component="label"
+                                sx={{
+                                    backgroundColor: 'rgb(201, 18, 18)',
+                                    color: '#fff'
+                                  }} >
                                 Upload transcript(pdf)
                                 <input 
                                 hidden 
@@ -243,7 +335,13 @@ function StorePage() {
                             </div>
 
                             <div className="form-type">
-                                <Button variant="contained" component="label">
+                                <Button variant="contained" 
+                                component="label"
+                                sx={{
+                                    backgroundColor: 'rgb(201, 18, 18)',
+                                    color: '#fff'
+                                  }}
+                                >
                                     Upload message(mp3)
                                     <input 
                                     hidden 
@@ -254,9 +352,9 @@ function StorePage() {
                                 </Button>
                             </div>
 
-                            <div className="form-type">
-                            <FormControl>
-                            <FormLabel id="demo-row-radio-buttons-group-label">Payable?</FormLabel>
+                            <div className="form-type" style={{ color: '#393a3a'}}>
+                            <FormControl sx={{color: '#393a3a'}}>
+                            <FormLabel id="demo-row-radio-buttons-group-label" sx={{color: '#393a3a'}}>Payable?</FormLabel>
                             <RadioGroup
                                 row
                                 aria-labelledby="demo-row-radio-buttons-group-label"
@@ -271,11 +369,20 @@ function StorePage() {
 
 
                             <div className="changes">
-                                <button 
+                               { isEdit ?
+                                 <button 
+                                 onClick={handleUpdate} 
+                                 className="edit-button"
+                                 disabled={loading}
+                                 >Update  {loading && <LoadingSpinner /> }
+                                 </button>
+                               :  <button 
                                 onClick={handleSubmit} 
                                 className="edit-button"
                                 disabled={loading}
-                                >Upload  {loading && <LoadingSpinner /> }</button>
+                                >Upload  {loading && <LoadingSpinner /> }
+                                </button>
+                                }
                             </div>
                         </form>
                     </div>
@@ -289,7 +396,7 @@ function StorePage() {
                     <div className="pop-up-form">
                         <div className="pop-up-info">
                             <h5>Click Confirm to Delete</h5>
-                            <button onClick={handleCloseDeletePopUp}>Confirm</button>
+                            <button onClick={handleDelete}>Confirm{loading&& <LoadingSpinner />}</button>
                         </div>
                     </div>
                 </div>
@@ -305,7 +412,7 @@ function StorePage() {
                     <div className="headnav">
                         <div className="title">
                             <h2>Store</h2>
-                            <AiOutlinePlus onClick={handleShowForm} />
+                            <AiOutlinePlus onClick={handleCreateForm} />
 
                         </div>
                         <div className="profile">
@@ -331,6 +438,7 @@ function StorePage() {
                     <div className="books">
                         <h2>Books on spirit</h2>
                         <div className="slide">
+                            { loading ? (<LoadingSpinner/>) :
                             <div className="spirit">
                                 { stores.map((store) =>( 
                                 <div 
@@ -341,151 +449,26 @@ function StorePage() {
                                     <h5>{store.title}</h5>
                                     <p>{store.message}</p>
                                     <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine onClick={handleDelete} className='delete' />
+                                        <BiEditAlt 
+                                         onClick={(e) => {
+                                            e.stopPropagation();
+                                            setCurrentId(store._id);
+                                            handleEditForm(store)
+                                          }}
+                                        className='edit' />
+                                        <RiDeleteBinLine 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setCurrentId(store._id);
+                                            handleDeletePopup();
+                                          }}
+                                        // onClick={handleDeletePopup} 
+                                        className='delete' />
 
                                     </div>
-                                </div> ))} 
-                                {/* <div className="part">
-                                    <img src={spirit2} alt="" />
-                                    <h5>planted (Part 2)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit2} alt="" />
-                                    <h5>planted (Part 3)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={power1} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={power2} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit1} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit2} alt="" />
-                                    <h5>planted (Part 2)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit2} alt="" />
-                                    <h5>planted (Part 3)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={power1} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={power2} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit1} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit2} alt="" />
-                                    <h5>planted (Part 2)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={spirit2} alt="" />
-                                    <h5>planted (Part 3)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={power1} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div>
-                                </div>
-                                <div className="part">
-                                    <img src={power2} alt="" />
-                                    <h5>planted (Part 1)</h5>
-                                    <p>The realities in the Spirit are not physical..</p>
-                                    <div>
-                                        <BiEditAlt className='edit' />
-                                        <RiDeleteBinLine className='delete' />
-
-                                    </div> 
-                                </div> */}
-
-                            </div>
-                        </div>
+                                </div> ))}  
+                            </div> }
+                        </div> 
                     </div>
                 </div>
             </div>
