@@ -138,12 +138,13 @@ const handleSubmit = async (e) => {
 
   
   const handleDelete = async () => {
-    setLoading(true);
+      setLoading(true);
       await axios.delete(`/blog/${currentId}`)
       .then((response) => 
       {
         console.log(response.json())
         setLoading(false);
+        window.alert('Blog deleted successfully');
         setSuccessMsg('Blog deleted successfully')
       })
       .catch((err) => console.log(err));
