@@ -142,16 +142,22 @@ const handleSubmit = async (e) => {
       await axios.delete(`/blog/${currentId}`)
       .then((response) => 
       {
+        if (response.status === 200) {
+          setLoading(false);
+          window.alert('Blog deleted successfully');
+          setSuccessMsg('Blog deleted successfully')
+        }
         console.log(response.json())
-        setLoading(false);
-        window.alert('Blog deleted successfully');
-        setSuccessMsg('Blog deleted successfully')
       })
-      .catch((err) => console.log(err));
-      window.alert('Unable to delete blog');
-      setLoading(false);
-      setPopUp(false);
+      .catch((response) => {
+        if (response.status === 500) { 
+          console.log(response.message)
+          window.alert('Unable to delete blog');
+          setLoading(false);
+        }
+      })
   };
+
   const handleDeletePopup = () => {
     setPopUp(true);
   }
