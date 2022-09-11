@@ -32,6 +32,15 @@ function StorePage() {
     const [popUp, setPopUp] = useState(false);
     const [currentId, setCurrentId] = useState("");
     const [isEdit, setIsEdit] = useState(false);
+    const [adminStore, setAdminStore] = useState({
+        title: '',
+        author: '',
+        message: '',
+        amount: '',
+        youtubeLink: '',
+        datePreached: '',
+        payable: 'false',
+    });
 
     const handleCloseForm = () => {
         setShowForm(false)
@@ -59,15 +68,6 @@ function StorePage() {
         setPopUp(false)
     };
 
-    const [adminStore, setAdminStore] = useState({
-        title: '',
-        author: '',
-        message: '',
-        amount: '',
-        youtubeLink: '',
-        datePreached: '',
-        payable: 'false',
-    });
     const handleEditForm = (store) => {
         setIsEdit(true)
         setShowForm(true);
