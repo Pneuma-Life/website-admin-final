@@ -6,16 +6,7 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { BiEditAlt } from 'react-icons/bi';
 import { FaTimes } from 'react-icons/fa';
 import { AiOutlinePlus } from 'react-icons/ai';
-// import spirit1 from '../assets/spirit1.png';
-// import spirit2 from '../assets/spirit2.png';
-// import faith1 from '../assets/faith1.png';
-// import faith2 from '../assets/faith2.png';
-// import power1 from '../assets/power1.png';
-// import power2 from '../assets/power2.png';
-// import prayer1 from '../assets/prayer1.png';
-// import prayer2 from '../assets/prayer2.png';
 import redlogo from '../assets/red-logo.png';
-
 import axios from '../api/index';
 import Button from '@mui/material/Button';
 import Radio from '@mui/material/Radio';
