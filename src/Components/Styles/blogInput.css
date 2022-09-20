@@ -100,10 +100,24 @@ form {
   padding: 25px 45px;
   border-radius: 5px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: scroll;
+}
+.storeform{
+  justify-content: center;
+  align-items: center;
+  width: 37%;
+  background: #ffffff;
+  margin: auto;
+  padding: 25px 45px;
+  border-radius: 5px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   height: 100vh;
   overflow-y: scroll;
-  /* margin: 10px 0px; */
-
+  margin-bottom: 10px;
+}
+.storeform::-webkit-scrollbar{
+  display: none;
 }
 form::-webkit-scrollbar{
   display: none;
@@ -222,12 +236,14 @@ textarea {
   border: 1px solid red;
 }
 @media (max-width: 999px) {
-  form {
+  form,
+  .storeform {
     width: 65%;
   }
 }
 @media (max-width: 768px) {
-  form {
+  form,
+  .storeform {
     width: 80%;
   }
   .cancel-head{
@@ -235,7 +251,8 @@ textarea {
   }
 }
 @media (max-width: 500px) {
-  form {
+  form,
+  .storeform {
     width: 100%;
   }
 }

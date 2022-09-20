@@ -225,7 +225,7 @@ function StorePage() {
                         <div className="cancel-head">
                             <FaTimes className='cancel-icon' onClick={handleCloseForm} />
                         </div>
-                        <form action="">
+                        <form className='storeform' action="">
                             <div className='form-head'>
                                 <img src={redlogo} alt="" />
                                 <h1>Add Message</h1>
