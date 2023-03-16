@@ -10,7 +10,6 @@ import NewsLetter from "./Routes/newsletter";
 import Login from "./Routes/Login"
 import Signup from "./Routes/signup"
 
-
 function App() {
   return (
     <>

@@ -135,12 +135,12 @@ function SideNav() {
         <nav>
           <li className="logo">
             <img className="real-logo" src={realLogo} alt="" />
-            <Link to="/home">Pneuma Life</Link>
+            <Link to="/">Pneuma Life</Link>
           </li>
           <ul>
             <li>
               <NavLink
-                to="/home"
+                to="/"
                 style={({ isActive }) => (isActive ? activeStyle : normalStyle)}
               >
                 <FaHome />
