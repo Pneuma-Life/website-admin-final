@@ -150,7 +150,7 @@ const handleSubmit = async (e) => {
         console.log(response.json())
       })
       .catch((response) => {
-        if (response.status === 500) { 
+        if (response.status === 500 ) { 
           console.log(response.message)
           window.alert('Unable to delete blog');
           setLoading(false);

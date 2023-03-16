@@ -42,12 +42,22 @@ function StorePage() {
         await axios.delete(`/store/${currentId}`)
         .then((response) => 
         {
-          console.log(response.json())
-          setLoading(false);
-          setSuccessMsg('Blog deleted successfully')
+            if (response.status === 200) {
+                setLoading(false);
+                window.alert('Message deleted successfully');
+                setSuccessMsg('Message deleted successfully');
+                console.log(response.json())
+
+              }
         })
-        .catch((err) => console.log(err));
-        window.alert('Unable to delete message');
+        .catch((response) => {
+            if (response.status === 500 || response.status === 404) { 
+                console.log(response.message)
+                window.alert('Unable to delete message');
+                setLoading(false);
+              }  
+        });
+        
         setLoading(false);
         setPopUp(false);
     };
